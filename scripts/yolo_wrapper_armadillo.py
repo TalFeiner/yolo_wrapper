@@ -48,17 +48,17 @@ def _Img_callback(ros_data):
                 circle_thickness = -1; radius = 15; circle_center = (int(center[0,ii]),int(center[1,ii]))
                 image = cv2.circle(frame, circle_center, radius, color, circle_thickness)
 
-                msg = CompressedImage()
-                msg.header.stamp = rospy.Time.now()
-                msg.format = "jpeg"
-                msg.data = np.array(cv2.imencode('.jpg', image)[1]).tostring()
-                pub_detections.publish(msg)
-                rospy.sleep(0.3)
+            msg = CompressedImage()
+            msg.header.stamp = rospy.Time.now()
+            msg.format = "jpeg"
+            msg.data = np.array(cv2.imencode('.jpg', image)[1]).tostring()
+            pub_detections.publish(msg)
+            #rospy.sleep(0.3)
 
-                # cv2.imshow(window_name, image)
-                # cv2.waitKey(1)
-                # #cv2.destroyAllWindows()
-                # break
+            # cv2.imshow(window_name, image)
+            # cv2.waitKey(1)
+            # #cv2.destroyAllWindows()
+            # break
         else:
             msg = CompressedImage()
             msg.header.stamp = rospy.Time.now()
