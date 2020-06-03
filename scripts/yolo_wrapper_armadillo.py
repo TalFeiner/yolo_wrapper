@@ -29,8 +29,7 @@ def _Img_callback(ros_data):
 
     np_arr = np.fromstring(ros_data.data, np.uint8)
     frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
-    rospy.Subscriber('/yolo/results', Detection2DArray, _results_callback)
+    
     pub_detections = rospy.Publisher('/yolo/results/compressed/', CompressedImage, queue_size=2)
 
     try:
@@ -84,4 +83,6 @@ rospy.init_node('video_handler', anonymous=True)
 #bridge = CvBridge()
 rospy.Subscriber("/kinect2/qhd/image_color_rect/compressed",
                          CompressedImage, _Img_callback, queue_size=2)
+rospy.Subscriber('/yolo/results', Detection2DArray, _results_callback)
+
 rospy.spin()
