@@ -17,7 +17,7 @@ fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
 def out_fun(shape):
     global out
-    out = cv2.VideoWriter('~/Videos/corridor_video.avi',fourcc, 20.0, (shape[1], shape[0]))
+    out = cv2.VideoWriter('corridor_video.avi',fourcc, 20.0, (shape[1], shape[0]))
 
 def _shutdown():
     out.release()
