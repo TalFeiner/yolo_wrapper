@@ -7,7 +7,8 @@ import numpy as np
 from sensor_msgs.msg import CompressedImage
 #from cv_bridge import CvBridge, CvBridgeError
 
-global out, c  
+global out, c, frame_num  
+frame_num = 6000
 c = 0
 
 # Define the codec and create VideoWriter object
@@ -40,7 +41,7 @@ def _Img_callback(ros_data):
     c = 1+c
 
     print "The number amount of captured frames: ", c
-    if (c == 3000):
+    if (c == frame_num):
         print "Video end "
         rospy.signal_shutdown("Video end")
 
