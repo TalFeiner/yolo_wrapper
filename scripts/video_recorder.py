@@ -36,6 +36,7 @@ def _Img_callback(ros_data):
         out_fun(frame_shape)
 
     #frame = cv2.flip(frame,0)
+    #cv2.imwrite("table_"+str(c)+'.jpg',frame)
     out.write(frame)
     rospy.sleep(0.1)
     c = 1+c
