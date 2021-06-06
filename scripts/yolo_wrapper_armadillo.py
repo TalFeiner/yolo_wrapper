@@ -9,6 +9,7 @@ from sensor_msgs.msg import CompressedImage
 from vision_msgs.msg import Detection2DArray
 
 flage = False
+global pub_detections
 
 def _results_callback(results):
     global center, size, flage
@@ -25,13 +26,10 @@ def _results_callback(results):
         flage = True
 
 def _Img_callback(ros_data):
-    global center, size, flage
+    global center, size, flage, pub_detections
 
     np_arr = np.fromstring(ros_data.data, np.uint8)
     frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
-    rospy.Subscriber('/yolo/results', Detection2DArray, _results_callback)
-    pub_detections = rospy.Publisher('/yolo/results/compressed/', CompressedImage, queue_size=2)
 
     try:
         # while True:
@@ -48,17 +46,17 @@ def _Img_callback(ros_data):
                 circle_thickness = -1; radius = 15; circle_center = (int(center[0,ii]),int(center[1,ii]))
                 image = cv2.circle(frame, circle_center, radius, color, circle_thickness)
 
-                msg = CompressedImage()
-                msg.header.stamp = rospy.Time.now()
-                msg.format = "jpeg"
-                msg.data = np.array(cv2.imencode('.jpg', image)[1]).tostring()
-                pub_detections.publish(msg)
-                rospy.sleep(0.3)
+            msg = CompressedImage()
+            msg.header.stamp = rospy.Time.now()
+            msg.format = "jpeg"
+            msg.data = np.array(cv2.imencode('.jpg', image)[1]).tostring()
+            pub_detections.publish(msg)
+            rospy.sleep(0.2)
 
-                # cv2.imshow(window_name, image)
-                # cv2.waitKey(1)
-                # #cv2.destroyAllWindows()
-                # break
+            # cv2.imshow(window_name, image)
+            # cv2.waitKey(1)
+            # #cv2.destroyAllWindows()
+            # break
         else:
             msg = CompressedImage()
             msg.header.stamp = rospy.Time.now()
@@ -82,6 +80,10 @@ def _Img_callback(ros_data):
 rospy.init_node('video_handler', anonymous=True)
 
 #bridge = CvBridge()
+rospy.Subscriber('/yolo/results', Detection2DArray, _results_callback)
+pub_detections = rospy.Publisher('/yolo/results/compressed/', CompressedImage, queue_size=2)
 rospy.Subscriber("/kinect2/qhd/image_color_rect/compressed",
                          CompressedImage, _Img_callback, queue_size=2)
+rospy.wait_for_message("/kinect2/qhd/image_color_rect/compressed", CompressedImage)
+
 rospy.spin()
